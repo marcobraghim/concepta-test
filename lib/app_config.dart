@@ -5,4 +5,6 @@ class AppConfig {
 
   static Color colorContrast = const Color(0xFF1D1C17);
   static Color colorPrimary = const Color(0xFF22FFCA);
+
+  static double horizontalPadding = 50;
 }

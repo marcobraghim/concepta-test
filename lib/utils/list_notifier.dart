@@ -5,7 +5,7 @@ class ListNotifier<T> extends ChangeNotifier {
 
   ListNotifier(this._list);
 
-  List<T> get items => _list;
+  List<T> get value => _list;
 
   T get first => _list.first;
   T get last => _list.last;
