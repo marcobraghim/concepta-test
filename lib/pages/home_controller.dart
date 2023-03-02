@@ -14,6 +14,8 @@ class HomeController {
   final status = ValueNotifier<StatusTypeEnum>(StatusTypeEnum.idle);
   final resultItems = ListNotifier<ResultListItemModel>([]);
 
+  final selectedItem = ValueNotifier<String?>(null);
+
   final pubClient = PubClient();
   final cancelable = Cancellable();
 
@@ -73,5 +75,12 @@ class HomeController {
   void selectItem(String value) {
     formFieldCtrl.text = value;
     resultItems.clear();
+
+    selectedItem.value = value;
+    formFieldCtrl.text = '';
+  }
+
+  void clearSelectedItem() {
+    selectedItem.value = null;
   }
 }

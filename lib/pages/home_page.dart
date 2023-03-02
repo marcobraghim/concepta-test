@@ -1,6 +1,7 @@
 import 'package:concepta_test/app_config.dart';
 import 'package:concepta_test/enums/status_type_enum.dart';
 import 'package:concepta_test/pages/home_controller.dart';
+import 'package:concepta_test/pages/widgets/item_details_widget/item_details_widget.dart';
 import 'package:concepta_test/pages/widgets/result_items_widget/result_items_widget.dart';
 import 'package:concepta_test/pages/widgets/suitup_observer_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,9 +51,20 @@ class _HomePageState extends State<HomePage> {
               children: [
                 const SizedBox(height: 150),
                 SuitupObserver(
-                  observables: [controller.searchExpanded, controller.status],
+                  observables: [
+                    controller.searchExpanded,
+                    controller.status,
+                    controller.selectedItem,
+                  ],
                   builder: (context) {
                     final expandedWidth = MediaQuery.of(context).size.width - (AppConfig.horizontalPadding * 2);
+
+                    if (controller.selectedItem.value != null) {
+                      return ItemDetailsWidget(
+                        name: controller.selectedItem.value!,
+                        onBack: controller.clearSelectedItem,
+                      );
+                    }
 
                     return GestureDetector(
                       onTap: controller.expandSearch,
