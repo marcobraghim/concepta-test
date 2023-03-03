@@ -4,4 +4,8 @@ class ResultItemsWidgetController {
   final hoverIndex = ValueNotifier<int?>(null);
 
   setHoverIndex(int index) => hoverIndex.value = index;
+
+  dispose() {
+    hoverIndex.dispose();
+  }
 }

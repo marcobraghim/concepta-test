@@ -29,6 +29,13 @@ class _ItemDetailsWidgetState extends State<ItemDetailsWidget> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+    controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.maxFinite,

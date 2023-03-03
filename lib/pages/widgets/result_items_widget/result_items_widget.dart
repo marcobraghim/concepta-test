@@ -6,13 +6,11 @@ import 'package:flutter/material.dart';
 
 class ResultListItemsWidget extends StatefulWidget {
   final List<ResultListItemModel> items;
-  final bool isRecentSearches;
   final Function(String value) onSelect;
 
   const ResultListItemsWidget({
     super.key,
     required this.items,
-    required this.isRecentSearches,
     required this.onSelect,
   });
 
@@ -22,6 +20,13 @@ class ResultListItemsWidget extends StatefulWidget {
 
 class _ResultListItemsWidgetState extends State<ResultListItemsWidget> {
   final controller = ResultItemsWidgetController();
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    controller.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

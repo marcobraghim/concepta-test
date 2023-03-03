@@ -24,4 +24,9 @@ class ItemDetailsWidgetController {
 
     setStatus(StatusTypeEnum.finished);
   }
+
+  dispose() {
+    status.dispose();
+    itemDetails.dispose();
+  }
 }

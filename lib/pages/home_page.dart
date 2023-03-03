@@ -23,114 +23,116 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    controller.formFieldFocus.addListener(controller.onChangeFocus);
+    controller.initialize();
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    controller.formFieldFocus.removeListener(controller.onChangeFocus);
+    controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       top: true,
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: double.maxFinite,
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppConfig.horizontalPadding),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 150),
-                SuitupObserver(
-                  observables: [
-                    controller.searchExpanded,
-                    controller.status,
-                    controller.selectedItem,
-                  ],
-                  builder: (context) {
-                    final expandedWidth = MediaQuery.of(context).size.width - (AppConfig.horizontalPadding * 2);
+      child: GestureDetector(
+        onTap: controller.collapseSearch,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: double.maxFinite,
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppConfig.horizontalPadding),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 150),
+                  SuitupObserver(
+                    observables: [
+                      controller.searchExpanded,
+                      controller.status,
+                      controller.selectedItem,
+                    ],
+                    builder: (context) {
+                      final expandedWidth = MediaQuery.of(context).size.width - (AppConfig.horizontalPadding * 2);
 
-                    if (controller.selectedItem.value != null) {
-                      return ItemDetailsWidget(
-                        name: controller.selectedItem.value!,
-                        onBack: controller.clearSelectedItem,
-                      );
-                    }
+                      if (controller.selectedItem.value != null) {
+                        return ItemDetailsWidget(
+                          name: controller.selectedItem.value!,
+                          onBack: controller.clearSelectedItem,
+                        );
+                      }
 
-                    return GestureDetector(
-                      onTap: controller.expandSearch,
-                      child: AnimatedContainer(
-                        key: controller.mainBoxKeyValue,
-                        duration: const Duration(milliseconds: 200),
-                        width: controller.searchExpanded.value ? expandedWidth : 54,
-                        height: 54,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(54),
-                          border: Border.all(
-                            width: 2,
-                            color: AppConfig.colorPrimary,
+                      return GestureDetector(
+                        onTap: controller.expandSearch,
+                        child: AnimatedContainer(
+                          key: controller.mainBoxKeyValue,
+                          duration: const Duration(milliseconds: 200),
+                          width: controller.searchExpanded.value ? expandedWidth : 54,
+                          height: 54,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(54),
+                            border: Border.all(
+                              width: 2,
+                              color: AppConfig.colorPrimary,
+                            ),
+                          ),
+                          child: SizedBox(
+                            child: !controller.searchExpanded.value
+                                ? Icon(
+                                    Icons.search,
+                                    color: AppConfig.colorPrimary,
+                                  )
+                                : Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextFormField(
+                                          focusNode: controller.formFieldFocus,
+                                          controller: controller.formFieldCtrl,
+                                          decoration: const InputDecoration(
+                                            border: InputBorder.none,
+                                            contentPadding: EdgeInsets.symmetric(horizontal: 25),
+                                          ),
+                                          cursorColor: AppConfig.colorPrimary,
+                                          style: TextStyle(color: AppConfig.colorPrimary),
+                                          onChanged: controller.search,
+                                        ),
+                                      ),
+                                      if (controller.status.value.isEqual(StatusTypeEnum.loading))
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 10, right: 25),
+                                          child: CupertinoActivityIndicator(color: AppConfig.colorPrimary),
+                                        ),
+                                    ],
+                                  ),
                           ),
                         ),
-                        child: SizedBox(
-                          child: !controller.searchExpanded.value
-                              ? Icon(
-                                  Icons.search,
-                                  color: AppConfig.colorPrimary,
-                                )
-                              : Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextFormField(
-                                        focusNode: controller.formFieldFocus,
-                                        controller: controller.formFieldCtrl,
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                          contentPadding: EdgeInsets.symmetric(horizontal: 25),
-                                        ),
-                                        cursorColor: AppConfig.colorPrimary,
-                                        style: TextStyle(color: AppConfig.colorPrimary),
-                                        onChanged: controller.search,
-                                      ),
-                                    ),
-                                    if (controller.status.value.isEqual(StatusTypeEnum.loading))
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 10, right: 25),
-                                        child: CupertinoActivityIndicator(color: AppConfig.colorPrimary),
-                                      ),
-                                  ],
-                                ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                SuitupObserver(
-                  observables: [
-                    controller.searchExpanded,
-                    controller.resultItems,
-                  ],
-                  builder: (context) {
-                    if (controller.searchExpanded.value == false) {
-                      return const SizedBox();
-                    }
+                      );
+                    },
+                  ),
+                  SuitupObserver(
+                    observables: [
+                      controller.searchExpanded,
+                      controller.resultItems,
+                    ],
+                    builder: (context) {
+                      if (controller.searchExpanded.value == false) {
+                        return const SizedBox();
+                      }
 
-                    return ResultListItemsWidget(
-                      items: controller.resultItems.value,
-                      isRecentSearches: true,
-                      onSelect: controller.selectItem,
-                    );
-                  },
-                ),
-              ],
+                      return ResultListItemsWidget(
+                        items: controller.resultItems.value,
+                        onSelect: controller.selectItem,
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
